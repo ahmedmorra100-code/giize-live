@@ -6,16 +6,17 @@ import urllib.request
 import urllib.parse
 
 # =====================================================================
-# ⚙️ إعدادات المنظومة وبيانات الاعتماد
+# ⚙️ إعدادات المنظومة
 # =====================================================================
 CONFIG = {
     "DOMAIN": "https://giize.com",
-    "SMARTLINK_URL": "https://YOUR_SMARTLINK_URL_HERE", # رابطك المباشر من Adsterra/Monetag
+    "PAGES_DOMAIN": "https://giize-live.pages.dev",
+    "SMARTLINK_URL": "https://giize.com", # استبدله برابط الـ SmartLink من Adsterra/Monetag
     "INDEXNOW_KEY": "giize_indexnow_key_2026",
-    "OUTPUT_DIR": "./dist"
+    "OUTPUT_DIR": "."
 }
 
-# بيانات الـ Service Account الخاصة بك (مفعلة كمالك في Google Search Console)
+# بيانات الحساب الخدمي المعتمد في Google Search Console
 SERVICE_ACCOUNT_INFO = {
   "type": "service_account",
   "project_id": "fine-bearing-506208-g6",
@@ -25,44 +26,49 @@ SERVICE_ACCOUNT_INFO = {
   "token_uri": "https://oauth2.googleapis.com/token"
 }
 
-# جدول مباريات اليوم
-TODAY_MATCHES = [
-    {
-        "home": "Arsenal",
-        "away": "Chelsea",
-        "league": "Premier League",
-        "time": "19:00",
-        "slug": "arsenal-vs-chelsea",
-        "stream": "https://www.scorebat.com/embed/g/123456/"
-    },
-    {
-        "home": "Barcelona",
-        "away": "Real Madrid",
-        "league": "La Liga - El Clasico",
-        "time": "20:00",
-        "slug": "barcelona-vs-real-madrid",
-        "stream": "https://www.scorebat.com/embed/g/654321/"
-    },
-    {
-        "home": "Bayern Munich",
-        "away": "Dortmund",
-        "league": "Bundesliga",
-        "time": "17:30",
-        "slug": "bayern-vs-dortmund",
-        "stream": "https://www.scorebat.com/embed/g/789012/"
-    },
-    {
-        "home": "Liverpool",
-        "away": "Manchester City",
-        "league": "Premier League",
-        "time": "21:00",
-        "slug": "liverpool-vs-manchester-city",
-        "stream": "https://www.scorebat.com/embed/g/998877/"
-    }
-]
+# =====================================================================
+# 🌐 جلب مباريات اليوم العالمية من Free Live Video API
+# =====================================================================
+def fetch_global_matches():
+    url = "https://www.scorebat.com/video-api/v3/feed/?token=MTc5NTI5XzE3MjQxNTg0ODhfOGFlN2EzMmQyNGNiMWM5OGFjY2MxNDYwMmIwMDExOTc="
+    try:
+        req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+        with urllib.request.urlopen(req, timeout=10) as response:
+            data = json.loads(response.read().decode())
+            matches = []
+            for item in data.get("response", []):
+                title = item.get("title", "")
+                competition = item.get("competition", "")
+                match_date = item.get("date", "")
+                thumbnail = item.get("thumbnail", "")
+                videos = item.get("videos", [])
+                embed_html = videos[0].get("embed", "") if videos else ""
+                
+                # استخراج رابط التضمين من كود الـ iframe
+                embed_url = ""
+                if "src='" in embed_html:
+                    embed_url = embed_html.split("src='")[1].split("'")[0]
+                elif 'src="' in embed_html:
+                    embed_url = embed_html.split('src="')[1].split('"')[0]
+                else:
+                    embed_url = f"https://www.scorebat.com/embed/livescore/"
+
+                slug = title.lower().replace(" ", "-").replace(":", "").replace("/", "-")
+                matches.append({
+                    "title": title,
+                    "league": competition,
+                    "date": match_date,
+                    "thumbnail": thumbnail,
+                    "embed_url": embed_url,
+                    "slug": slug
+                })
+            return matches
+    except Exception as e:
+        print(f"⚠️ خطأ في جلب المباريات المباشرة: {e}")
+        return []
 
 # =====================================================================
-# 🔑 دالة استخراج Access Token من Google Service Account
+# 🔑 دالة استخراج Access Token لجوجل
 # =====================================================================
 def get_google_access_token():
     try:
@@ -74,15 +80,12 @@ def get_google_access_token():
         request = google.auth.transport.requests.Request()
         credentials.refresh(request)
         return credentials.token
-    except ImportError:
-        print("💡 لتفعيل الأرشفة الفورية لجوجل، قم بتثبيت: pip install google-auth")
-        return None
     except Exception as e:
-        print(f"⚠️ خطأ في توليد توكن جوجل: {e}")
+        print(f"⚠️ خطأ توكن جوجل: {e}")
         return None
 
 # =====================================================================
-# 🚀 دالة إرسال طلب الأرشفة الفورية لـ Google Indexing API
+# 🚀 إرسال الأرشفة لجوجل
 # =====================================================================
 def send_google_indexing(url, token):
     if not token:
@@ -96,14 +99,12 @@ def send_google_indexing(url, token):
     try:
         with urllib.request.urlopen(req) as resp:
             if resp.getcode() == 200:
-                print(f"🎯 [Google Indexing API] تم إرسال الأرشفة بنجاح ✅ -> {url}")
-            else:
-                print(f"⚠️ Google Response: {resp.getcode()}")
+                print(f"🎯 [Google Indexing API] أرشفة فورية بنجاح ✅ -> {url}")
     except Exception as e:
-        print(f"❌ Google Indexing Error for ({url}): {e}")
+        print(f"❌ خطأ جوجل: {e}")
 
 # =====================================================================
-# ⚡ دالة إرسال طلب IndexNow لـ Bing و Yahoo
+# ⚡ إرسال الأرشفة لـ IndexNow (Bing / Yahoo / Yandex)
 # =====================================================================
 def send_indexnow(urls):
     payload = {
@@ -116,72 +117,139 @@ def send_indexnow(urls):
     req = urllib.request.Request("https://api.indexnow.org/indexnow", data=data, headers={"Content-Type": "application/json; charset=utf-8"})
     try:
         with urllib.request.urlopen(req) as response:
-            print(f"🚀 [IndexNow - Bing/Yahoo] تم إرسال الدفعة بنجاح ✅ (Status: {response.getcode()})")
+            print(f"🚀 [IndexNow - Bing/Yahoo] تم إرسال {len(urls)} صفحة بنجاح ✅")
     except Exception as e:
-        print(f"⚠️ IndexNow Notice: {e}")
+        print(f"⚠️ خطأ IndexNow: {e}")
 
 # =====================================================================
-# 🛠️ دالة توليد الصفحات ونشرها
+# 🛠️ دالة بناء الصفحات والأرشفة
 # =====================================================================
 def main():
-    print("🚀 بدء تشغيل محرك البث الرياضي والأرشفة الفورية v1.0...")
-    os.makedirs(os.path.join(CONFIG["OUTPUT_DIR"], "live"), exist_ok=True)
-    
-    if not os.path.exists("template.html"):
-        print("❌ لم يتم العثور على ملف template.html في نفس المجلد!")
-        return
+    print("🌍 جاري سحب جدول مباريات العالم الحية...")
+    matches = fetch_global_matches()
+    print(f"⚽ تم العثور على {len(matches)} مباراة حية متوفرة الآن!")
 
-    with open("template.html", "r", encoding="utf-8") as f:
-        template_content = f.read()
-
+    os.makedirs(os.path.join(CONFIG["OUTPUT_DIR"], "match"), exist_ok=True)
     generated_urls = []
-    today_str = datetime.date.today().strftime("%Y-%m-%d")
-    now_iso = datetime.datetime.utcnow().isoformat() + "Z"
+    today_iso = datetime.datetime.utcnow().isoformat() + "Z"
 
-    for match in TODAY_MATCHES:
-        match_title = f"{match['home']} vs {match['away']}"
-        page_html = template_content
-        page_html = page_html.replace("{{MATCH_TITLE}}", match_title)
-        page_html = page_html.replace("{{HOME_TEAM}}", match["home"])
-        page_html = page_html.replace("{{AWAY_TEAM}}", match["away"])
-        page_html = page_html.replace("{{LEAGUE_NAME}}", match["league"])
-        page_html = page_html.replace("{{MATCH_DATE}}", today_str)
-        page_html = page_html.replace("{{MATCH_TIME}}", match["time"])
-        page_html = page_html.replace("{{MATCH_TIME_ISO}}", now_iso)
-        page_html = page_html.replace("{{MATCH_SLUG}}", match["slug"])
-        page_html = page_html.replace("{{STREAM_EMBED_URL}}", match["stream"])
-        page_html = page_html.replace("{{SMARTLINK_URL}}", CONFIG["SMARTLINK_URL"])
-        page_html = page_html.replace("{{THUMBNAIL_URL}}", f"{CONFIG['DOMAIN']}/assets/sports-thumb.jpg")
+    # قالب الـ HTML لكل مباراة مستقلة مع السكيما والكلمات المفتاحية
+    template = """<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch {title} Live Stream Free HD - {league}</title>
+  <meta name="description" content="Watch {title} live stream online in Full HD. Real-time scores, lineups, video stream and commentary for {league} on Giize Sports.">
+  <meta name="keywords" content="{title} live stream, watch {title} free online, {league} stream, football live broadcast, soccer live match">
 
-        output_path = os.path.join(CONFIG["OUTPUT_DIR"], "live", f"{match['slug']}.html")
-        with open(output_path, "w", encoding="utf-8") as out:
-            out.write(page_html)
+  <!-- Schema Markup for Google Live Broadcast Indexing -->
+  <script type="application/ld+json">
+  {{
+    "@context": "https://schema.org",
+    "@type": "BroadcastEvent",
+    "name": "{title} Live Broadcast",
+    "isLiveBroadcast": true,
+    "startDate": "{date}",
+    "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "video": {{
+      "@type": "VideoObject",
+      "name": "{title} Live Stream HD",
+      "description": "Watch live football stream and real-time coverage for {title}",
+      "thumbnailUrl": "{thumb}",
+      "uploadDate": "{date}",
+      "embedUrl": "https://giize.com/match/{slug}.html"
+    }}
+  }}
+  </script>
 
-        page_url = f"{CONFIG['DOMAIN']}/live/{match['slug']}.html"
+  <style>
+    * {{ margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }}
+    body {{ background-color: #0b0e14; color: #e1e7ec; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }}
+    header {{ width: 100%; max-width: 1000px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1a2230; }}
+    .logo {{ font-size: 24px; font-weight: 900; color: #00d26a; text-decoration: none; }}
+    .live-badge {{ background: #ff3344; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }}
+    .container {{ width: 100%; max-width: 1000px; padding: 20px; text-align: center; }}
+    .match-header {{ background: #121824; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #1f2a3d; }}
+    .league-name {{ color: #00d26a; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }}
+    .teams {{ font-size: 26px; font-weight: 800; color: #fff; }}
+    .player-box {{ position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; }}
+    .player-box iframe {{ position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }}
+    .servers-grid {{ display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 15px 0; }}
+    .server-btn {{ background: #1a2230; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 1px solid #2e3c54; }}
+    .server-btn.active {{ background: #00d26a; color: #000; }}
+    .seo-box {{ background: #121824; padding: 20px; border-radius: 12px; text-align: left; color: #a0aec0; font-size: 14px; line-height: 1.8; border: 1px solid #1f2a3d; }}
+    footer {{ margin-top: auto; padding: 20px; color: #5a6a80; font-size: 13px; text-align: center; width: 100%; border-top: 1px solid #1a2230; }}
+  </style>
+</head>
+<body>
+  <header>
+    <a href="/" class="logo">GIIZE<span>SPORTS</span></a>
+    <span class="live-badge">🔴 LIVE STREAM</span>
+  </header>
+  <div class="container">
+    <div class="match-header">
+      <div class="league-name">{league}</div>
+      <div class="teams">{title}</div>
+    </div>
+    <div class="player-box">
+      <iframe src="{embed}" allowfullscreen="true" scrolling="no"></iframe>
+    </div>
+    <div class="servers-grid">
+      <a href="#" class="server-btn active">⚡ Server 1 (HD Live)</a>
+      <a href="{smartlink}" target="_blank" class="server-btn">🚀 Server 2 (4K Ultra)</a>
+      <a href="{smartlink}" target="_blank" class="server-btn">🎧 Audio Commentary</a>
+    </div>
+    <div class="seo-box">
+      <h3 style="color:#fff; margin-bottom: 8px;">Live Stream Coverage: {title}</h3>
+      <p>Watch free live football stream for <strong>{title}</strong> playing in the <strong>{league}</strong>. High-definition stream with real-time match events, commentary, and full match replay.</p>
+    </div>
+  </div>
+  <footer>&copy; 2026 Giize Sports Network.</footer>
+</body>
+</html>"""
+
+    # توليد صفحات المباريات
+    for m in matches:
+        match_html = template.format(
+            title=m["title"],
+            league=m["league"],
+            date=m["date"] if m["date"] else today_iso,
+            thumb=m["thumbnail"] if m["thumbnail"] else "https://giize.com/assets/thumb.jpg",
+            embed=m["embed_url"],
+            slug=m["slug"],
+            smartlink=CONFIG["SMARTLINK_URL"]
+        )
+        file_path = os.path.join(CONFIG["OUTPUT_DIR"], "match", f"{m['slug']}.html")
+        with open(file_path, "w", encoding="utf-8") as f:
+            f.write(match_html)
+        
+        page_url = f"{CONFIG['DOMAIN']}/match/{m['slug']}.html"
         generated_urls.append(page_url)
-        print(f"⚽ تم توليد صفحة المباراة: {page_url}")
 
     # إنشاء sitemap.xml
-    sitemap_xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-    for url in generated_urls:
-        sitemap_xml += f"  <url>\n    <loc>{url}</loc>\n    <lastmod>{today_str}</lastmod>\n    <changefreq>hourly</changefreq>\n  </url>\n"
-    sitemap_xml += "</urlset>"
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    for u in generated_urls:
+        sitemap += f"  <url>\n    <loc>{u}</loc>\n    <changefreq>hourly</changefreq>\n    <priority>0.9</priority>\n  </url>\n"
+    sitemap += "</urlset>"
 
-    with open(os.path.join(CONFIG["OUTPUT_DIR"], "sitemap.xml"), "w", encoding="utf-8") as sm:
-        sm.write(sitemap_xml)
-    print("📋 تم إنشاء خريطة الموقع sitemap.xml بنجاح.")
+    with open(os.path.join(CONFIG["OUTPUT_DIR"], "sitemap.xml"), "w", encoding="utf-8") as f:
+        f.write(sitemap)
+    print("📋 تم تحديث sitemap.xml بنجاح.")
 
-    # 1. إرسال إلى Google Indexing API
-    google_token = get_google_access_token()
-    if google_token:
-        for u in generated_urls:
-            send_google_indexing(u, google_token)
-            time.sleep(1) # فاصل ثانية بين الطلبات
+    # 1. إرسال الأرشفة لجوجل (أول 200 رابط)
+    token = get_google_access_token()
+    if token:
+        for u in generated_urls[:200]:
+            send_google_indexing(u, token)
+            time.sleep(0.5)
 
-    # 2. إرسال إلى IndexNow (Bing / Yahoo)
-    send_indexnow(generated_urls)
+    # 2. إرسال الأرشفة لـ IndexNow (لكل الروابط دفعة واحدة بدون سقف)
+    if generated_urls:
+        send_indexnow(generated_urls)
 
-    print("\n🎉 اكتملت العملية بنجاح! الصفحات جاهزة ومرفوعة ومؤرشفة في محركات البحث.")
+    print(f"\n🎉 تم الانتهاء! تم توليد وأرشفة {len(generated_urls)} مباراة عالمية.")
 
 if __name__ == "__main__":
     main()

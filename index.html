@@ -37,26 +37,20 @@
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
     .container { width: 100%; max-width: 1000px; padding: 20px; text-align: center; }
+    .ad-banner-top { width: 100%; min-height: 90px; background: #121824; border: 1px dashed #2e3c54; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; color: #5a6a80; font-size: 13px; font-weight: bold; }
     .match-header { background: #121824; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #1f2a3d; }
     .league-name { color: #00d26a; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }
     .teams { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 10px; }
     .time-info { color: #8a99ad; font-size: 14px; }
 
-    /* مشغل الفيديو الرياضي التفاعلي */
-    .player-box { position: relative; width: 100%; padding-top: 56.25%; background: radial-gradient(circle, #1a2638 0%, #080b10 100%); border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
-    .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); }
-    .play-btn-large { width: 75px; height: 75px; background: #00d26a; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; box-shadow: 0 0 30px rgba(0,210,106,0.6); animation: pulse 2s infinite; transition: transform 0.2s; }
-    .play-btn-large:hover { transform: scale(1.1); }
-    .play-triangle { width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 22px solid #000; margin-left: 5px; }
-    .player-status-text { color: #fff; font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
-
-    /* أزرار السيرفرات والرابط المباشر SmartLink */
+    .player-box { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; }
+    .player-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    
     .servers-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 15px 0 25px; }
     .server-btn { background: #1a2230; color: #fff; text-decoration: none; padding: 12px 22px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 1px solid #2e3c54; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .server-btn:hover { background: #00d26a; color: #000; border-color: #00d26a; transform: translateY(-2px); }
     .server-btn.active { background: #00d26a; color: #000; border-color: #00d26a; }
 
-    /* جدول مباريات اليوم المباشرة */
     .matches-list { margin-top: 30px; text-align: left; }
     .matches-list h3 { font-size: 20px; color: #fff; margin-bottom: 15px; border-left: 4px solid #00d26a; padding-left: 10px; }
     .match-card { background: #121824; border: 1px solid #1f2a3d; border-radius: 10px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; transition: 0.2s; }
@@ -64,6 +58,7 @@
     .match-teams { font-weight: bold; font-size: 16px; color: #fff; }
     .match-badge { background: #00d26a; color: #000; padding: 6px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; }
 
+    .ad-banner-bottom { width: 100%; min-height: 250px; background: #121824; border: 1px dashed #2e3c54; border-radius: 8px; margin-top: 25px; display: flex; justify-content: center; align-items: center; color: #5a6a80; font-size: 13px; font-weight: bold; }
     .seo-info { background: #121824; border-radius: 12px; padding: 20px; margin-top: 30px; text-align: left; line-height: 1.8; color: #8a99ad; font-size: 14px; border: 1px solid #1f2a3d; }
     .seo-info h4 { color: #fff; margin-bottom: 8px; font-size: 16px; }
 
@@ -78,20 +73,21 @@
   </header>
 
   <div class="container">
+    
+    <!-- مساحة البنر الإعلاني العلوي (728x90) -->
+    <div class="ad-banner-top">
+      📢 SPONSOR / BANNER AD SPACE (728x90)
+    </div>
+
     <div class="match-header">
       <div class="league-name">Featured Global Match</div>
       <div class="teams">Today's Live Football Broadcast Hub</div>
-      <div class="time-info">📅 Real-Time Stream | ⏰ Auto-Switching Live Channels</div>
+      <div class="time-info">📅 Real-Time Stream | ⏰ Live Highlights & Instant Feeds</div>
     </div>
 
-    <!-- مشغل البث الرياضي المباشر التفاعلي المحول للسمارت لينك -->
+    <!-- مشغل البث الرياضي المباشر التفاعلي الحي المفتوح -->
     <div class="player-box">
-      <div class="player-overlay">
-        <a href="https://www.effectivecpmnetwork.com/ersihz46k6?key=5739767d6e39c4e87b743acd12a17516" target="_blank" class="play-btn-large">
-          <div class="play-triangle"></div>
-        </a>
-        <div class="player-status-text">⚡ Click Play to Watch Live HD Stream (No Lag)</div>
-      </div>
+      <iframe src="https://www.scorebat.com/embed/g/123456/" allow="autoplay; fullscreen" allowfullscreen="true" scrolling="no"></iframe>
     </div>
 
     <!-- أزرار السيرفرات والرابط المباشر SmartLink الخاص بك -->
@@ -128,6 +124,11 @@
         </div>
         <span class="match-badge">Watch Live HD</span>
       </a>
+    </div>
+
+    <!-- مساحة البنر الإعلاني السفلي (300x250) -->
+    <div class="ad-banner-bottom">
+      📢 RESPONSIVE BANNER AD SPACE (300x250 / Native Ads)
     </div>
 
     <div class="seo-info">

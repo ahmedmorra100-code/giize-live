@@ -11,7 +11,7 @@ import urllib.parse
 CONFIG = {
     "DOMAIN": "https://giize.com",
     "PAGES_DOMAIN": "https://giize-live.pages.dev",
-    "SMARTLINK_URL": "https://www.effectivecpmnetwork.com/ersihz46k6?key=5739767d6e39c4e87b743acd12a17516", # استبدله برابط الـ SmartLink من Adsterra/Monetag
+    "SMARTLINK_URL": "https://www.effectivecpmnetwork.com/ersihz46k6?key=5739767d6e39c4e87b743acd12a17516",
     "INDEXNOW_KEY": "giize_indexnow_key_2026",
     "OUTPUT_DIR": "."
 }
@@ -44,14 +44,13 @@ def fetch_global_matches():
                 videos = item.get("videos", [])
                 embed_html = videos[0].get("embed", "") if videos else ""
                 
-                # استخراج رابط التضمين من كود الـ iframe
                 embed_url = ""
                 if "src='" in embed_html:
                     embed_url = embed_html.split("src='")[1].split("'")[0]
                 elif 'src="' in embed_html:
                     embed_url = embed_html.split('src="')[1].split('"')[0]
                 else:
-                    embed_url = f"https://www.scorebat.com/embed/livescore/"
+                    embed_url = "https://www.scorebat.com/embed/g/123456/"
 
                 slug = title.lower().replace(" ", "-").replace(":", "").replace("/", "-")
                 matches.append({
@@ -133,7 +132,7 @@ def main():
     generated_urls = []
     today_iso = datetime.datetime.utcnow().isoformat() + "Z"
 
-    # قالب الـ HTML لكل مباراة مستقلة مع السكيما والكلمات المفتاحية
+    # قالب الـ HTML لكل مباراة مستقلة مع السكيما والكلمات المفتاحية والسمارت لينك
     template = """<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,6 +170,7 @@ def main():
     .logo {{ font-size: 24px; font-weight: 900; color: #00d26a; text-decoration: none; }}
     .live-badge {{ background: #ff3344; color: #fff; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }}
     .container {{ width: 100%; max-width: 1000px; padding: 20px; text-align: center; }}
+    .ad-banner-top {{ width: 100%; min-height: 90px; background: #121824; border: 1px dashed #2e3c54; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; color: #5a6a80; font-size: 13px; font-weight: bold; }}
     .match-header {{ background: #121824; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #1f2a3d; }}
     .league-name {{ color: #00d26a; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; }}
     .teams {{ font-size: 26px; font-weight: 800; color: #fff; }}
@@ -179,7 +179,8 @@ def main():
     .servers-grid {{ display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 15px 0; }}
     .server-btn {{ background: #1a2230; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 1px solid #2e3c54; }}
     .server-btn.active {{ background: #00d26a; color: #000; }}
-    .seo-box {{ background: #121824; padding: 20px; border-radius: 12px; text-align: left; color: #a0aec0; font-size: 14px; line-height: 1.8; border: 1px solid #1f2a3d; }}
+    .ad-banner-bottom {{ width: 100%; min-height: 250px; background: #121824; border: 1px dashed #2e3c54; border-radius: 8px; margin-top: 25px; display: flex; justify-content: center; align-items: center; color: #5a6a80; font-size: 13px; font-weight: bold; }}
+    .seo-box {{ background: #121824; padding: 20px; border-radius: 12px; text-align: left; color: #a0aec0; font-size: 14px; line-height: 1.8; border: 1px solid #1f2a3d; margin-top: 20px; }}
     footer {{ margin-top: auto; padding: 20px; color: #5a6a80; font-size: 13px; text-align: center; width: 100%; border-top: 1px solid #1a2230; }}
   </style>
 </head>
@@ -189,6 +190,7 @@ def main():
     <span class="live-badge">🔴 LIVE STREAM</span>
   </header>
   <div class="container">
+    <div class="ad-banner-top">📢 SPONSOR / BANNER AD SPACE (728x90)</div>
     <div class="match-header">
       <div class="league-name">{league}</div>
       <div class="teams">{title}</div>
@@ -197,10 +199,11 @@ def main():
       <iframe src="{embed}" allowfullscreen="true" scrolling="no"></iframe>
     </div>
     <div class="servers-grid">
-      <a href="#" class="server-btn active">⚡ Server 1 (HD Live)</a>
+      <a href="{smartlink}" target="_blank" class="server-btn active">⚡ Server 1 (HD Live)</a>
       <a href="{smartlink}" target="_blank" class="server-btn">🚀 Server 2 (4K Ultra)</a>
       <a href="{smartlink}" target="_blank" class="server-btn">🎧 Audio Commentary</a>
     </div>
+    <div class="ad-banner-bottom">📢 RESPONSIVE BANNER AD SPACE (300x250)</div>
     <div class="seo-box">
       <h3 style="color:#fff; margin-bottom: 8px;">Live Stream Coverage: {title}</h3>
       <p>Watch free live football stream for <strong>{title}</strong> playing in the <strong>{league}</strong>. High-definition stream with real-time match events, commentary, and full match replay.</p>
@@ -238,7 +241,7 @@ def main():
         f.write(sitemap)
     print("📋 تم تحديث sitemap.xml بنجاح.")
 
-    # 1. إرسال الأرشفة لجوجل (أول 200 رابط)
+    # 1. إرسال الأرشفة لجوجل (أول 200 رابط رئيسي)
     token = get_google_access_token()
     if token:
         for u in generated_urls[:200]:

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Giize Sports - Watch Live Football Matches & Scores Free HD</title>
   <meta name="description" content="Watch today's global football matches live stream free in Full HD. Real-time live scores, match broadcasts, and commentary on Giize Sports.">
-  <meta name="keywords" content="live football stream, watch soccer live, premier league stream, la liga live, live match broadcast, free sports stream, football live 2026">
+  <meta name="keywords" content="live football stream, watch soccer live, premier league stream, la liga live, live match broadcast, free sports stream">
 
   <!-- Schema Markup for Instant Google Live Broadcast Indexing -->
   <script type="application/ld+json">
@@ -42,11 +42,15 @@
     .teams { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 10px; }
     .time-info { color: #8a99ad; font-size: 14px; }
 
-    /* مشغل الفيديو الرياضي الحقيقي التفاعلي */
-    .player-box { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; }
-    .player-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
-    
-    /* أزرار السيرفرات والتحويل المباشر SmartLink الخاصة بك */
+    /* مشغل الفيديو الرياضي التفاعلي */
+    .player-box { position: relative; width: 100%; padding-top: 56.25%; background: radial-gradient(circle, #1a2638 0%, #080b10 100%); border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; display: flex; justify-content: center; align-items: center; }
+    .player-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 15px; background: rgba(0,0,0,0.5); }
+    .play-btn-large { width: 75px; height: 75px; background: #00d26a; border-radius: 50%; display: flex; justify-content: center; align-items: center; text-decoration: none; box-shadow: 0 0 30px rgba(0,210,106,0.6); animation: pulse 2s infinite; transition: transform 0.2s; }
+    .play-btn-large:hover { transform: scale(1.1); }
+    .play-triangle { width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 22px solid #000; margin-left: 5px; }
+    .player-status-text { color: #fff; font-size: 16px; font-weight: bold; letter-spacing: 0.5px; }
+
+    /* أزرار السيرفرات والرابط المباشر SmartLink */
     .servers-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin: 15px 0 25px; }
     .server-btn { background: #1a2230; color: #fff; text-decoration: none; padding: 12px 22px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 1px solid #2e3c54; transition: 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .server-btn:hover { background: #00d26a; color: #000; border-color: #00d26a; transform: translateY(-2px); }
@@ -80,9 +84,14 @@
       <div class="time-info">📅 Real-Time Stream | ⏰ Auto-Switching Live Channels</div>
     </div>
 
-    <!-- مشغل البث الرياضي المباشر المتجدد 24/7 -->
+    <!-- مشغل البث الرياضي المباشر التفاعلي المحول للسمارت لينك -->
     <div class="player-box">
-      <iframe src="https://vidsrc.stream/embed/football/" allowfullscreen="true" scrolling="no" frameborder="0"></iframe>
+      <div class="player-overlay">
+        <a href="https://www.effectivecpmnetwork.com/ersihz46k6?key=5739767d6e39c4e87b743acd12a17516" target="_blank" class="play-btn-large">
+          <div class="play-triangle"></div>
+        </a>
+        <div class="player-status-text">⚡ Click Play to Watch Live HD Stream (No Lag)</div>
+      </div>
     </div>
 
     <!-- أزرار السيرفرات والرابط المباشر SmartLink الخاص بك -->

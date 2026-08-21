@@ -3,29 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="i1d7_d2sR-14sbgI6pIaJTuhQYV0mfKo2WN4R--95PI" />
-  <title>{{MATCH_TITLE}} - Watch Live Stream Free HD</title>
-  <meta name="description" content="Watch {{MATCH_TITLE}} live stream online free in HD. Live match score, highlights, commentary and full match schedule on Giize Sports.">
-  <meta name="keywords" content="{{MATCH_TITLE}} live, watch {{HOME_TEAM}} vs {{AWAY_TEAM}} online, free football stream, soccer live stream, HD match broadcast">
+  <title>Giize Sports - Watch Live Football Matches Free HD</title>
+  <meta name="description" content="Watch today's football matches live stream free in Full HD. Real-time live scores, match schedules, and commentary on Giize Sports.">
+  <meta name="keywords" content="live football stream, watch soccer live, live match today, free sports broadcast, hd match stream">
 
-  <!-- Schema Markup for Instant Sports Live Broadcast Indexing -->
+  <!-- Schema Markup for Google Live Indexing -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "BroadcastEvent",
-    "name": "{{MATCH_TITLE}} Live Broadcast",
+    "name": "Live Football Matches Broadcast",
     "isLiveBroadcast": true,
-    "startDate": "{{MATCH_TIME_ISO}}",
+    "startDate": "2026-08-21T12:00:00Z",
     "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "video": {
-      "@type": "VideoObject",
-      "name": "{{MATCH_TITLE}} Live Stream HD",
-      "description": "Watch live football stream and real-time commentary for {{MATCH_TITLE}}",
-      "thumbnailUrl": "{{THUMBNAIL_URL}}",
-      "uploadDate": "{{MATCH_TIME_ISO}}",
-      "embedUrl": "https://giize-live.pages.dev/live/{{MATCH_SLUG}}"
-    }
+    "eventStatus": "https://schema.org/EventScheduled"
   }
   </script>
 
@@ -43,52 +34,79 @@
     .teams { font-size: 26px; font-weight: 800; color: #fff; margin-bottom: 10px; }
     .time-info { color: #8a99ad; font-size: 14px; }
 
-    .ad-banner-top { margin: 15px 0; min-height: 90px; background: rgba(255,255,255,0.02); display: flex; justify-content: center; align-items: center; border-radius: 8px; }
-
+    /* مشغل البث الحي المباشر */
     .player-box { position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 2px solid #1f2a3d; margin-bottom: 20px; }
     .player-box iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
     
+    /* أزرار السيرفرات والتحويل المباشر SmartLink */
     .servers-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 15px 0 25px; }
     .server-btn { background: #1a2230; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 8px; font-weight: bold; font-size: 14px; border: 1px solid #2e3c54; transition: 0.2s; }
     .server-btn:hover, .server-btn.active { background: #00d26a; color: #000; border-color: #00d26a; }
 
-    .seo-content { background: #121824; padding: 25px; border-radius: 12px; text-align: left; line-height: 1.8; color: #a0aec0; border: 1px solid #1f2a3d; font-size: 15px; }
-    .seo-content h2 { color: #fff; font-size: 20px; margin-bottom: 12px; }
-    footer { margin-top: auto; padding: 25px; color: #5a6a80; font-size: 13px; text-align: center; width: 100%; border-top: 1px solid #1a2230; }
+    /* جدول مباريات اليوم */
+    .matches-list { margin-top: 30px; text-align: left; }
+    .matches-list h3 { font-size: 20px; color: #fff; margin-bottom: 15px; border-left: 4px solid #00d26a; padding-left: 10px; }
+    .match-card { background: #121824; border: 1px solid #1f2a3d; border-radius: 10px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; color: inherit; transition: 0.2s; }
+    .match-card:hover { border-color: #00d26a; background: #162030; }
+    .match-teams { font-weight: bold; font-size: 16px; color: #fff; }
+    .match-badge { background: #00d26a; color: #000; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; }
+
+    footer { margin-top: 40px; padding: 25px; color: #5a6a80; font-size: 13px; text-align: center; width: 100%; border-top: 1px solid #1a2230; }
   </style>
 </head>
 <body>
 
   <header>
-    <a href="https://giize-live.pages.dev" class="logo">GIIZE<span>SPORTS</span></a>
+    <a href="/" class="logo">GIIZE<span>SPORTS</span></a>
     <span class="live-badge">🔴 LIVE BROADCAST</span>
   </header>
 
   <div class="container">
     <div class="match-header">
-      <div class="league-name">{{LEAGUE_NAME}}</div>
-      <div class="teams">{{HOME_TEAM}} ⚡ {{AWAY_TEAM}}</div>
-      <div class="time-info">📅 {{MATCH_DATE}} | ⏰ Kick-off: {{MATCH_TIME}} UTC</div>
+      <div class="league-name">Featured Match Today</div>
+      <div class="teams">Arsenal vs Chelsea</div>
+      <div class="time-info">📅 Today | ⏰ Kick-off: 19:00 UTC</div>
     </div>
 
-    <div class="ad-banner-top" id="ad-slot-header">
-      <!-- ضع كود البنر هنا -->
-    </div>
-
+    <!-- مشغل البث الحي المباشر -->
     <div class="player-box">
-      <iframe src="{{STREAM_EMBED_URL}}" allowfullscreen="true" scrolling="no"></iframe>
+      <iframe src="https://www.scorebat.com/embed/livescore/" allowfullscreen="true" scrolling="no"></iframe>
     </div>
 
+    <!-- أزرار السيرفرات والرابط المباشر -->
     <div class="servers-grid">
-      <a href="https://giize-live.pages.dev/live/{{MATCH_SLUG}}" class="server-btn active">⚡ Server 1 (HD Auto)</a>
-      <a href="{{SMARTLINK_URL}}" target="_blank" class="server-btn">🚀 Server 2 (4K No Lag)</a>
-      <a href="{{SMARTLINK_URL}}" target="_blank" class="server-btn">🎧 Live Commentary</a>
+      <a href="/" class="server-btn active">⚡ Server 1 (HD Auto)</a>
+      <a href="https://giize.com" class="server-btn">🚀 Server 2 (4K No Lag)</a>
+      <a href="https://giize.com" class="server-btn">🎧 Live Commentary</a>
     </div>
 
-    <div class="seo-content">
-      <h2>About {{MATCH_TITLE}} Live Match Stream</h2>
-      <p>Welcome to Giize Sports official free live coverage of <strong>{{MATCH_TITLE}}</strong> in the <strong>{{LEAGUE_NAME}}</strong>. Watch the full match stream online with crystal clear audio commentary, instant scoreline updates, and post-match video highlights.</p>
-      <p style="margin-top: 10px;">Our stream is optimized for all desktop, tablet, and mobile devices without requiring any third-party app installations.</p>
+    <!-- قائمة مباريات اليوم المباشرة -->
+    <div class="matches-list">
+      <h3>Today's Live Football Matches</h3>
+      
+      <a href="/" class="match-card">
+        <div>
+          <div style="font-size: 12px; color: #00d26a; margin-bottom: 4px;">Premier League</div>
+          <div class="match-teams">Arsenal vs Chelsea</div>
+        </div>
+        <span class="match-badge">Watch Live</span>
+      </a>
+
+      <a href="/" class="match-card">
+        <div>
+          <div style="font-size: 12px; color: #00d26a; margin-bottom: 4px;">La Liga - El Clasico</div>
+          <div class="match-teams">Barcelona vs Real Madrid</div>
+        </div>
+        <span class="match-badge">Watch Live</span>
+      </a>
+
+      <a href="/" class="match-card">
+        <div>
+          <div style="font-size: 12px; color: #00d26a; margin-bottom: 4px;">Bundesliga</div>
+          <div class="match-teams">Bayern Munich vs Dortmund</div>
+        </div>
+        <span class="match-badge">Watch Live</span>
+      </a>
     </div>
   </div>
 

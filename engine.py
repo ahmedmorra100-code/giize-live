@@ -11,7 +11,7 @@ import urllib.parse
 CONFIG = {
     "DOMAIN": "https://giize.com",
     "PAGES_DOMAIN": "https://giize-live.pages.dev",
-    "SMARTLINK_URL": "https://giize.com", # استبدله برابط الـ SmartLink من Adsterra/Monetag
+    "SMARTLINK_URL": "https://www.effectivecpmnetwork.com/ersihz46k6?key=5739767d6e39c4e87b743acd12a17516", # استبدله برابط الـ SmartLink من Adsterra/Monetag
     "INDEXNOW_KEY": "giize_indexnow_key_2026",
     "OUTPUT_DIR": "."
 }
